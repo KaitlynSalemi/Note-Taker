@@ -6,31 +6,46 @@
 
 const router = require("express").Router();
 const store = require("../db/store");
+var fs = require("fs");
+const util = require("util");
 
-router.get("/api/notes", function (req,  res){
-    store
-    // read db.json
-    .getNotes()
-    // return all saved notes as json
-    .then(notes => res.json(notes));
+const readFileAsync = util.promisify(fs.readFile);
+
+// router.get("/notes", function (req,  res){
+//     res.send('get on /api/notes has been hit')
+//     // console.log(store.readExistingNotes());
+//     store
+//     .readExistingNotes()
+//     // .then(db => res.json(db));
+// });
+
+router.get("/notes", function (req,  res){
+    readFileAsync("./db/db.json", "utf8")
+    .then(function (data){
+        // console.log(data);
+        res.json(data)
+        
+    })
 });
 
-router.post("/api/notes", function (req,  res){
-    store
-    // recieve new note to save on request body
-    .saveNote(req.body)
-    // add to db.json
-    // return new note to the client
-    .then(note => res.json(note));
+// router.post("/notes", function (req,  res){
+//     store
+//     .saveNewNote(req.body)
+//     .then(res.json());
+// });
+
+router.post("/notes", function (req,  res){
+   console.log(req.body);
+    // writeFile
+    // parse stringify 
+   res.json("saved");
+   
 });
 
-router.delete("/api/:id", function (req,  res){
+router.delete("/notes/:id", function (req,  res){
     store
-    // recieve id of the note to delete
-    // read db.json
-    // remove note
-    .deleteNote()
-    // rewrite the notes to db.json
+    .deleteNote(req.params)
+    .then(res.json());
 });
 
 module.exports = router;
