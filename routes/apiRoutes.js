@@ -1,9 +1,3 @@
-// GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
-
-// * POST `/api/notes` - Should recieve a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
-
-// * DELETE `/api/notes/:id` - Should recieve a query paramter containing the id of a note to delete. This means you'll need to find a way to give each note a unique `id` when it's saved. In order to delete a note, you'll need to read all notes from the `db.json` file, remove the note with the given `id` property, and then rewrite the notes to the `db.json` file.
-
 const router = require("express").Router();
 var fs = require("fs");
 const util = require("util");
@@ -38,24 +32,19 @@ router.post("/notes", function (req,  res){
     })
 });
 
-//need to know the id
-//need to read the file
-//then find the index of said id
-// then remove said index of array
-//then write file
-
+// route to remove the note that is deleted by the user
 router.delete("/notes/:id", function (req,  res){
     readFileAsync("./db/db.json", "utf8").then(function (data){
         const notes = JSON.parse(data);
         // console.log(notes);
 
         let noteID = parseInt(req.params.id);
-        console.log(noteID);
+        // console.log(noteID);
         
-        delete notes[noteID];
-        console.log(notes[noteID])
+        let newData = notes.filter(note =>note !== notes[noteID])
+        // console.log(newData)
 
-        const notesJSON = JSON.stringify(notes);
+        const notesJSON = JSON.stringify(newData);
         writeFileAsync("./db/db.json", notesJSON).then(function(notes){
             // console.log(notesJSON);
         })
