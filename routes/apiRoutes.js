@@ -32,21 +32,35 @@ router.post("/notes", function (req,  res){
         }
         const notesJSON = JSON.stringify(notes);
         writeFileAsync("./db/db.json", notesJSON).then(function(notes){
-            console.log(notes);
+            // console.log(notesJSON);
         })
         res.json(notes);
     })
 });
 
+//need to know the id
+//need to read the file
+//then find the index of said id
+// then remove said index of array
+//then write file
+
 router.delete("/notes/:id", function (req,  res){
-    //need to know the id
-    //need to read the file
-    //then find the index of said id
-    // then remove said index of array
-    //then write file
-    
-    deleteNote(req.params.id)
-    res.json();
+    readFileAsync("./db/db.json", "utf8").then(function (data){
+        const notes = JSON.parse(data);
+        // console.log(notes);
+
+        let noteID = parseInt(req.params.id);
+        console.log(noteID);
+        
+        delete notes[noteID];
+        console.log(notes[noteID])
+
+        const notesJSON = JSON.stringify(notes);
+        writeFileAsync("./db/db.json", notesJSON).then(function(notes){
+            // console.log(notesJSON);
+        })
+        res.json(notes);
+    })
 });
 
 module.exports = router;
